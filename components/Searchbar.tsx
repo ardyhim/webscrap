@@ -3,7 +3,7 @@
 import { scrapeAndStoreProduct } from '@/lib/actions';
 import { FormEvent, useState } from 'react'
 
-const isValidAmazonProductURL = (url: string) => {
+const isValidWebsiteProductURL = (url: string) => {
   try {
     const parsedURL = new URL(url);
     const hostname = parsedURL.hostname;
@@ -11,7 +11,25 @@ const isValidAmazonProductURL = (url: string) => {
     if(
       hostname.includes('amazon.com') || 
       hostname.includes ('amazon.') || 
-      hostname.endsWith('amazon')
+      hostname.endsWith('amazon') ||
+      hostname.includes('newegg.com') || 
+      hostname.includes ('newegg.') || 
+      hostname.endsWith('newegg') ||
+      hostname.includes('walmart.com') || 
+      hostname.includes ('walmart.') || 
+      hostname.endsWith('walmart') ||
+      hostname.includes('target.com') || 
+      hostname.includes ('target.') || 
+      hostname.endsWith('target') ||
+      hostname.includes('homedepod.com') || 
+      hostname.includes ('homedepod.') || 
+      hostname.endsWith('homedepod') ||
+      hostname.includes('bestbuy.com') || 
+      hostname.includes ('bestbuy.') || 
+      hostname.endsWith('bestbuy') ||
+      hostname.includes('lowes.com') || 
+      hostname.includes ('lowes.') || 
+      hostname.endsWith('lowes')
     ) {
       return true;
     }
@@ -24,12 +42,13 @@ const isValidAmazonProductURL = (url: string) => {
 
 const Searchbar = () => {
   const [searchPrompt, setSearchPrompt] = useState('');
+  const [siteCategory, setSiteCategory] = useState('amazon');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const isValidLink = isValidAmazonProductURL(searchPrompt);
+    const isValidLink = isValidWebsiteProductURL(searchPrompt);
 
     if(!isValidLink) return alert('Please provide a valid Amazon link')
 
@@ -37,7 +56,7 @@ const Searchbar = () => {
       setIsLoading(true);
 
       // Scrape the product page
-      const product = await scrapeAndStoreProduct(searchPrompt);
+      const product = await scrapeAndStoreProduct(searchPrompt, siteCategory);
     } catch (error) {
       console.log(error);
     } finally {
@@ -57,6 +76,21 @@ const Searchbar = () => {
         placeholder="Enter product link"
         className="searchbar-input"
       />
+
+        <select id="site"
+          className="rounded-lg border p-2"
+          value={siteCategory}
+          defaultValue="amazon"
+          onChange={(e) => setSiteCategory(e.target.value)}
+        >
+          <option value="amazon">Amazon</option>
+          <option value="newegg">Newegg</option>
+          <option value="homedepod">Homedepod</option>
+          <option value="bestbuy">Bestbuy</option>
+          <option value="target">Target</option>
+          <option value="walmart">Walmart</option>
+          <option value="lowes">Lowes</option>
+        </select>
 
       <button 
         type="submit" 
