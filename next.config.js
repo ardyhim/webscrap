@@ -5,7 +5,7 @@ const nextConfig = {
     serverComponentsExternalPackages: ['mongoose']
   },
   images: {
-    domains: ['m.media-amazon.com', 'c1.neweggimages.com']
+    domains: ['m.media-amazon.com', 'c1.neweggimages.com', 'ssl.cf2.rackcdn.com']
   }
 }
 

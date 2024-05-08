@@ -15,21 +15,24 @@ const isValidWebsiteProductURL = (url: string) => {
       hostname.includes('newegg.com') || 
       hostname.includes ('newegg.') || 
       hostname.endsWith('newegg') ||
-      hostname.includes('walmart.com') || 
-      hostname.includes ('walmart.') || 
-      hostname.endsWith('walmart') ||
+      hostname.includes('microcenter.com') || 
+      hostname.includes ('microcenter.') || 
+      hostname.endsWith('microcenter') ||
       hostname.includes('target.com') || 
       hostname.includes ('target.') || 
       hostname.endsWith('target') ||
-      hostname.includes('homedepod.com') || 
-      hostname.includes ('homedepod.') || 
-      hostname.endsWith('homedepod') ||
       hostname.includes('bestbuy.com') || 
       hostname.includes ('bestbuy.') || 
-      hostname.endsWith('bestbuy') ||
-      hostname.includes('lowes.com') || 
-      hostname.includes ('lowes.') || 
-      hostname.endsWith('lowes')
+      hostname.endsWith('bestbuy')
+      // hostname.includes('walmart.com') || 
+      // hostname.includes ('walmart.') || 
+      // hostname.endsWith('walmart') ||
+      // hostname.includes('homedepod.com') || 
+      // hostname.includes ('homedepod.') || 
+      // hostname.endsWith('homedepod') ||
+      // hostname.includes('lowes.com') || 
+      // hostname.includes ('lowes.') || 
+      // hostname.endsWith('lowes')
     ) {
       return true;
     }
@@ -85,8 +88,9 @@ const Searchbar = () => {
         >
           <option value="amazon">Amazon</option>
           <option value="newegg">Newegg</option>
-          <option value="homedepod">Homedepod</option>
           <option value="bestbuy">Bestbuy</option>
+          <option value="microcenter">Microcenter</option>
+          <option value="homedepod">Homedepod</option>
           <option value="target">Target</option>
           <option value="walmart">Walmart</option>
           <option value="lowes">Lowes</option>

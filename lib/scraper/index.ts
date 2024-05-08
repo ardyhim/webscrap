@@ -202,3 +202,66 @@ export async function scrapeBestbuyProduct(url: string) {
     console.log(error);
   }
 }
+
+export async function scrapeMicrocenterProduct(url: string) {
+  if(!url) return;
+
+  // BrightData proxy configuration
+  const username = String(process.env.BRIGHT_DATA_USERNAME);
+  const password = String(process.env.BRIGHT_DATA_PASSWORD);
+  const port = 22225;
+  const session_id = (1000000 * Math.random()) | 0;
+
+  const options = {
+    auth: {
+      username: `${username}-session-${session_id}`,
+      password,
+    },
+    host: 'brd.superproxy.io',
+    port,
+    rejectUnauthorized: false,
+  }
+
+  try {
+    // Fetch the product page
+    const response = await axios.get(url, options);
+    const $ = cheerio.load(response.data);
+
+    const title = $('.product-header').text().trim().split(';')[0];
+    const currentPrice = $('#pricing').attr('content');
+    const originalPrice = $('.standardDiscount>strike').eq(1).text().trim().replace('Original price $', '');
+    const currency = $('.standardDiscount>strike').eq(1).text().trim().replace('Original price ', '')[0];
+    const priceDifference = Number(originalPrice) - Number(currentPrice);
+    const discountRate = (priceDifference / Number(originalPrice)) * 100;
+    const image = $('.productImageZoom').attr('src');
+    const el = [...$("script")].find(e =>
+      $(e).text().includes('"reviewCount":')
+    );
+    const meta = JSON.parse($(el).text().trim())
+    const reviewsCount = meta.aggregateRating.reviewCount;
+    let description = meta.description.split(';');
+    let outOfStock = false;
+    const data = {
+      url,
+      currency: currency,
+      image: image || '',
+      title,
+      currentPrice: Number(currentPrice) || Number(originalPrice),
+      originalPrice: Number(originalPrice) || Number(currentPrice),
+      priceHistory: [],
+      discountRate: Math.round(discountRate),
+      category: 'microcenter',
+      reviewsCount: Number(reviewsCount),
+      stars: Math.round(meta.aggregateRating.ratingValue),
+      isOutOfStock: outOfStock || false,
+      description: description,
+      lowestPrice: Number(currentPrice) || Number(originalPrice),
+      highestPrice: Number(originalPrice) || Number(currentPrice),
+      averagePrice: Number(currentPrice) || Number(originalPrice),
+    };
+
+    return data;
+  } catch (error: any) {
+    console.log(error);
+  }
+}

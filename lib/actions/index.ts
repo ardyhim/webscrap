@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import Product from "../models/product.model";
 import { connectToDB } from "../mongoose";
-import { scrapeAmazonProduct, scrapeNeweggProduct } from "../scraper";
+import { scrapeAmazonProduct, scrapeMicrocenterProduct, scrapeNeweggProduct } from "../scraper";
 import { getAveragePrice, getHighestPrice, getLowestPrice } from "../utils";
 import { User } from "@/types";
 import { generateEmailBody, sendEmail } from "../nodemailer";
@@ -22,6 +22,9 @@ export async function scrapeAndStoreProduct(productUrl: string, site: string) {
       scrapedProduct = await scrapeNeweggProduct(productUrl);
     }else if(site == "newegg"){
       scrapedProduct = await scrapeNeweggProduct(productUrl);
+    }else if(site == "microcenter"){
+      console.log(site)
+      scrapedProduct = await scrapeMicrocenterProduct(productUrl);
     }
 
     if(!scrapedProduct) return;
