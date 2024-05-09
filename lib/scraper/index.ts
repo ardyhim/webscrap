@@ -11,21 +11,23 @@ export async function scrapeAmazonProduct(url: string) {
   const username = String(process.env.BRIGHT_DATA_USERNAME);
   const password = String(process.env.BRIGHT_DATA_PASSWORD);
   const port = 22225;
-  const session_id = (1000000 * Math.random()) | 0;
-
-  const options = {
-    auth: {
-      username: `${username}-session-${session_id}`,
-      password,
-    },
-    host: 'brd.superproxy.io',
-    port,
-    rejectUnauthorized: false,
-  }
 
   try {
     // Fetch the product page
-    const response = await axios.get(url, options);
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+      },
+      proxy: {
+        protocol: 'http',
+        host: 'brd.superproxy.io',
+        port: port,
+        auth: {
+          username: username,
+          password: password,
+        },
+      }
+    });
     const $ = cheerio.load(response.data);
 
     // Extract the product title
@@ -91,21 +93,23 @@ export async function scrapeNeweggProduct(url: string) {
   const username = String(process.env.BRIGHT_DATA_USERNAME);
   const password = String(process.env.BRIGHT_DATA_PASSWORD);
   const port = 22225;
-  const session_id = (1000000 * Math.random()) | 0;
-
-  const options = {
-    auth: {
-      username: `${username}-session-${session_id}`,
-      password,
-    },
-    host: 'brd.superproxy.io',
-    port,
-    rejectUnauthorized: false,
-  }
 
   try {
     // Fetch the product page
-    const response = await axios.get(url, options);
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+      },
+      proxy: {
+        protocol: 'http',
+        host: 'brd.superproxy.io',
+        port: port,
+        auth: {
+          username: username,
+          password: password,
+        },
+      }
+    });
     const $ = cheerio.load(response.data);
 
     // Extract the product
@@ -150,21 +154,23 @@ export async function scrapeBestbuyProduct(url: string) {
   const username = String(process.env.BRIGHT_DATA_USERNAME);
   const password = String(process.env.BRIGHT_DATA_PASSWORD);
   const port = 22225;
-  const session_id = (1000000 * Math.random()) | 0;
-
-  const options = {
-    auth: {
-      username: `${username}-session-${session_id}`,
-      password,
-    },
-    host: 'brd.superproxy.io',
-    port,
-    rejectUnauthorized: false,
-  }
 
   try {
     // Fetch the product page
-    const response = await axios.get(url, options);
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+      },
+      proxy: {
+        protocol: 'http',
+        host: 'brd.superproxy.io',
+        port: port,
+        auth: {
+          username: username,
+          password: password,
+        },
+      }
+    });
     const $ = cheerio.load(response.data);
 
     const title = $('.sku-title').text().trim();
@@ -210,21 +216,22 @@ export async function scrapeMicrocenterProduct(url: string) {
   const username = String(process.env.BRIGHT_DATA_USERNAME);
   const password = String(process.env.BRIGHT_DATA_PASSWORD);
   const port = 22225;
-  const session_id = (1000000 * Math.random()) | 0;
-
-  const options = {
-    auth: {
-      username: `${username}-session-${session_id}`,
-      password,
-    },
-    host: 'brd.superproxy.io',
-    port,
-    rejectUnauthorized: false,
-  }
-
   try {
     // Fetch the product page
-    const response = await axios.get(url, options);
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+      },
+      proxy: {
+        protocol: 'http',
+        host: 'brd.superproxy.io',
+        port: port,
+        auth: {
+          username: username,
+          password: password,
+        },
+      }
+    });
     const $ = cheerio.load(response.data);
 
     const title = $('.product-header').text().trim().split(';')[0];
@@ -237,9 +244,9 @@ export async function scrapeMicrocenterProduct(url: string) {
     const el = [...$("script")].find(e =>
       $(e).text().includes('"reviewCount":')
     );
-    const meta = JSON.parse($(el).text().trim())
+    const meta = JSON.parse($(el).text().replace(/\r\n|\n|\r/g, ''))
     const reviewsCount = meta.aggregateRating.reviewCount;
-    let description = meta.description.split(';');
+    let description = meta.description;
     let outOfStock = false;
     const data = {
       url,

@@ -23,7 +23,6 @@ export async function scrapeAndStoreProduct(productUrl: string, site: string) {
     }else if(site == "newegg"){
       scrapedProduct = await scrapeNeweggProduct(productUrl);
     }else if(site == "microcenter"){
-      console.log(site)
       scrapedProduct = await scrapeMicrocenterProduct(productUrl);
     }
 

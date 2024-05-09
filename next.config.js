@@ -5,8 +5,13 @@ const nextConfig = {
     serverComponentsExternalPackages: ['mongoose']
   },
   images: {
-    domains: ['m.media-amazon.com', 'c1.neweggimages.com', 'ssl.cf2.rackcdn.com']
-  }
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig
