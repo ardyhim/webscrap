@@ -18,6 +18,9 @@ const isValidWebsiteProductURL = (url: string) => {
       hostname.includes('microcenter.com') || 
       hostname.includes ('microcenter.') || 
       hostname.endsWith('microcenter') ||
+      hostname.includes('bhphotovideo.com') || 
+      hostname.includes ('bhphotovideo.') || 
+      hostname.endsWith('bhphotovideo') ||
       hostname.includes('target.com') || 
       hostname.includes ('target.') || 
       hostname.endsWith('target') ||
@@ -90,6 +93,7 @@ const Searchbar = () => {
           <option value="newegg">Newegg</option>
           <option value="bestbuy">Bestbuy</option>
           <option value="microcenter">Microcenter</option>
+          <option value="bhphotovideo">Bhphotovideo</option>
           <option value="homedepod">Homedepod</option>
           <option value="target">Target</option>
           <option value="walmart">Walmart</option>

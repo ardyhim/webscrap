@@ -272,3 +272,69 @@ export async function scrapeMicrocenterProduct(url: string) {
     console.log(error);
   }
 }
+
+export async function scrapeBhphotovideoProduct(url: string) {
+  if(!url) return;
+
+  // BrightData proxy configuration
+  const username = String(process.env.BRIGHT_DATA_USERNAME);
+  const password = String(process.env.BRIGHT_DATA_PASSWORD);
+  const port = 22225;
+  try {
+    // Fetch the product page
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+      },
+      proxy: {
+        protocol: 'http',
+        host: 'brd.superproxy.io',
+        port: port,
+        auth: {
+          username: username,
+          password: password,
+        },
+      }
+    });
+    const $ = cheerio.load(response.data);
+
+    const el = [...$("script")].find(e =>
+      $(e).text().includes('"ratingValue":')
+    );
+    const meta = JSON.parse($(el).text())
+    const title = meta.name;
+    const currentPrice = meta.offers.price;
+    const image = meta.image;
+    const originalPrice = $('div[data-selenium="strikeThroughPrice"]').text();
+    const currency = currentPrice[0];
+    const priceDifference = Number(originalPrice) - currentPrice;
+    const discountRate = (priceDifference / Number(originalPrice)) * 100;
+    const outOfStock = false;
+  
+    const stars = meta.aggregateRating.ratingValue;
+    const description = meta.description;
+    const reviewsCount = meta.aggregateRating.reviewCount;
+    const data = {
+      url,
+      currency: currency,
+      image: image || '',
+      title,
+      currentPrice: Number(currentPrice) || Number(originalPrice),
+      originalPrice: Number(originalPrice) || Number(currentPrice),
+      priceHistory: [],
+      discountRate: Math.round(discountRate),
+      category: 'microcenter',
+      reviewsCount: Number(reviewsCount),
+      stars: Math.round(meta.aggregateRating.ratingValue),
+      isOutOfStock: outOfStock || false,
+      description: description,
+      lowestPrice: Number(currentPrice) || Number(originalPrice),
+      highestPrice: Number(originalPrice) || Number(currentPrice),
+      averagePrice: Number(currentPrice) || Number(originalPrice),
+    };
+
+    return data;
+  } catch (error: any) {
+    console.log(error);
+  }
+}
